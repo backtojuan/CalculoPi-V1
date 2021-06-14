@@ -75,7 +75,7 @@ public class ClientImpl
       long puntoscirculo = 0;      
 
       //Preparar archivo de salida
-      String salida = "Resultado Pi, Tiempos respuesta(ms), Número de nodos" + "\n";      
+      String salida = "Resultado Pi, Tiempos respuesta(ms), Numero de nodos" + "\n";      
       File results = new File(filePath + "/client/src/main/resources/salida.csv");
       FileWriter fw = new FileWriter(results);
       BufferedWriter bw = new BufferedWriter(fw);
@@ -126,7 +126,7 @@ public class ClientImpl
           end = System.currentTimeMillis();
           
           //Anexar a la salida el resultado
-          salida += result;        
+          salida += result + ",";        
           System.out.println(result);
           
           
@@ -134,9 +134,9 @@ public class ClientImpl
           averageTime += (end - start);
           
           //Anexar a la salida el tiempo de respuesta y el numero de procesadores
-          salida += averageTime;        
-          salida += 1 + "\n";
-          
+          salida += averageTime + ",";        
+          salida += 1 + "," + "\n";
+          System.out.println(salida);
           //Reiniciar la variable contador de puntos de circulo
           puntoscirculo = 0;  
                        
