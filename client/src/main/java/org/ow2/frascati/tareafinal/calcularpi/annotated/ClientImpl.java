@@ -9,7 +9,6 @@ import org.osoa.sca.annotations.Init;
 import org.osoa.sca.annotations.Reference;
 
 import java.util.Scanner;
-import java.util.Random;
 
 import java.io.File;
 import java.io.BufferedWriter;
@@ -71,17 +70,13 @@ public class ClientImpl
       long averageTime = 0;
 
       //Variables de calculo
-      float result = 0;
-      long puntoscirculo = 0;      
-
+      long result = 0;
+            
       //Preparar archivo de salida
       String salida = "Resultado Pi, Tiempos respuesta(ms), Numero de nodos" + "\n";      
       File results = new File(filePath + "/client/src/main/resources/salida.csv");
       FileWriter fw = new FileWriter(results);
-      BufferedWriter bw = new BufferedWriter(fw);
-
-      Random rnd = new Random();
-					
+      					
       //Leer la primera linea pero descartarla
 			String headers = reader.nextLine();
 
@@ -98,54 +93,41 @@ public class ClientImpl
 			  //Asignar valores
         puntos = Long.parseLong(line[0]);
         seed = Long.parseLong(line[1]);
-        rnd.setSeed(seed);
-
+        
         //Repetir el calculo 10 veces
         for(int j=0; j<10;j++)
         {
           //Tomar el tiempo justo antes de empezar la ejecución
-          start = System.currentTimeMillis();
-
-          //Generar los puntos
-          for(int i=0; i<puntos; i++){          
-            //Generar los puntos
-            double puntox = rnd.nextDouble();
-            double puntoy = rnd.nextDouble();          
-        
-            //Verificar si el punto cumple con la ecuación del circulo 
-            double radio = (puntox * puntox + puntoy * puntoy);
-            if(radio <= 1){
-              puntoscirculo++;
-            }                     
-          }    
-
+          start = System.currentTimeMillis();                       
+             
           //Pedir el resultado
-          result = s.calcPi(puntoscirculo,puntos);  
+          result = s.calcPi(seed,puntos);  
           
+          //Calcular pi
+          float pi = ((float) result)/puntos;                
+          pi = 4*pi;
+
           //Tomar el tiempo justo después de terminar el calculo
           end = System.currentTimeMillis();
-          
+                    
           //Anexar a la salida el resultado
-          salida += result + ",";        
-          System.out.println(result);
-          
-          
+          salida += pi + ",";        
+                              
           //Calcular el tiempo de ejecución
           averageTime += (end - start);
           
           //Anexar a la salida el tiempo de respuesta y el numero de procesadores
           salida += averageTime + ",";        
-          salida += 1 + "," + "\n";
-          System.out.println(salida);
-          //Reiniciar la variable contador de puntos de circulo
-          puntoscirculo = 0;  
-                       
+          salida += 1 + "," + "\n";                                       
         }
-
-        System.out.println(averageTime);
-        System.out.println();        
-        lineaActual++;
-			}             
+        System.out.println(salida);
+        System.out.println(); 
+        //Escribir para el caso de prueba 1 (se considera no dejar en ejecución está versión para un caso de prueba 
+        //mayor al 2 pues su caracter monolitico) genera un pésimo desempeño.       
+        fw.write(salida); 
+        fw.close();        
+        lineaActual++;        
+			}                  
 		}
 		catch(FileNotFoundException fnfe){
 			System.out.println("No se puede encontrar el archivo que tiene la información");
